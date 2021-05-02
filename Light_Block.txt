@@ -1,0 +1,88 @@
+#发光方块ID，包含PBR
+
+#红色
+block.10 = minecraft:flowing_lava
+block.11 = minecraft:lava
+block.62 = minecraft:lit_furnace
+block.76 = minecraft:redstone_torch
+block.213 = minecraft:magma
+
+#黄色
+block.50 = minecraft:torch
+block.51 = minecraft:fire
+block.89 = minecraft:glowstone
+block.91 = minecraft:jack_o_pumpkin
+block.348 = minecraft:glowstone_dust
+block.1101 = campfire
+
+#蓝色
+block.138 = minecraft:beacon
+block.169 = minecraft:sea_lantern
+block.411 = minecraft:sea_pickle
+
+#白色
+block.119 = minecraft:end_portal
+block.124 = minecraft:lit_redstone_lamp
+block.198 = minecraft:end_rod
+block.412 = minecraft:conduit
+
+#紫色
+block.90 = minecraft:portal
+block.426 = minecraft:end_crystal
+
+#PBR
+block.27 = minecraft:golden_rail
+block.28 = minecraft:detector_rail
+block.55 = minecraft:redstone_wire
+block.94 = minecraft:powered_repeater 
+block.116 = minecraft:enchanting_table
+block.157 = minecraft:activator_rail
+block.356 = minecraft:repeater
+block.377 = minecraft:blaze_powder
+block.399 = minecraft:nether_star
+
+
+//Go 标准化RGB代码
+
+func rgb2cmap(cr, cg, cb int) int {
+	best := 0
+	bestsq := 0x7FFFFFFF
+	for i := 0; i < 256; i++ {
+		r, g, b := cmap2rgb(i)
+		sq := (r-cr)*(r-cr) + (g-cg)*(g-cg) + (b-cb)*(b-cb)
+		if sq < bestsq {
+			bestsq = sq
+			best = i
+		}
+	}
+	return best
+}
+
+func cmap2rgb(c int) (r, g, b int) {
+	r = c >> 6
+	v := (c >> 4) & 3
+	j := (c - v + r) & 15
+	g = j >> 2
+	b = j & 3
+	den := r
+	if g > den {
+		den = g
+	}
+	if b > den {
+		den = b
+	}
+	if den == 0 {
+		v *= 17
+		return v, v, v
+	}
+	num := 17 * (4*den + v)
+	r = r * num / den
+	g = g * num / den
+	b = b * num / den
+	return
+}
+
+func cmap2rgba(c int) Color {
+	r, g, b := cmap2rgb(c)
+	return Color(r<<24 | g<<16 | b<<8 | 0xFF)
+}
